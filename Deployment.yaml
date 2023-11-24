@@ -1,0 +1,43 @@
+# Для управления ресурсами и поведением приложения в разных фазах дня нам потребуется использовать HorizontalPodAutoscaler (HPA) для автоматического масштабирования количества реплик на основе загрузки.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-application
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: web-application
+  template:
+    metadata:
+      labels:
+        app: web-application
+    spec:
+      containers:
+      - name: app-container
+        image: your-web-application-image:tag
+        resources:
+          requests:
+            cpu: "4"
+            memory: "128Mi"
+          limits:
+            cpu: "4"
+            memory: "128Mi"
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - sleep 10 # ожидание инициализации приложения
+          initialDelaySeconds: 10 # начать проверку через 10 секунд после старта контейнера
+          periodSeconds: 5  # частота проверок
+          successThreshold: 1 # сколько раз должен успешно пройти readinessProbe, чтобы считать под готовым
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - /check-liveness.sh # скрипт для проверки живости
+          initialDelaySeconds: 30 # начать проверку через 30 секунд после старта контейнера
+          periodSeconds: 10  # частота проверок
+          successThreshold: 1 # сколько раз должен успешно пройти livenessProbe, чтобы считать под живым
