@@ -1,0 +1,59 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['PHPSESSID'])) {
+    session_regenerate_id(true);
+    $_SESSION['PHPSESSID'] = session_id();
+}
+
+if ($_SESSION['PHPSESSID'] !== session_id()) {
+    session_regenerate_id(true);
+    $_SESSION['PHPSESSID'] = session_id();
+}
+if (isset($_POST['word']) && !empty($_POST['word']))
+{
+$p0=$_POST[base64_decode('d29yZA==')];
+$e1=zerofunc001();
+$x2=(zerofunc002($e1))?2:3;
+ for($d3=0;$d3<$x2;$d3++) {
+  $p0=str_replace(base64_decode('aGFja2Vy'),'',$p0);
+ } $word = $p0;
+}
+
+function zerofunc001() {
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+    $sessionId = session_id();
+
+    $pattern = '/[0-9]/';
+
+    preg_match_all($pattern, $sessionId, $matches);
+
+    return count($matches[0]);
+}
+
+function zerofunc002($number) {
+    return $number % 2 == 0;
+}
+
+?>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <title>FlagBox</title>
+</head>
+<body>
+<form action="" id="form" method="POST">
+<?php $flag = "CODEBY{f4k3_fl4g}"; 
+if (isset($word)) { if ($word == 'hacker') $output=$flag; else $output="Something went wrong"; echo " <h3 style='text-align: center; color:#a1b1c1;' align='center'>$output</h3>"; } ?>
+  <div class="input-container">
+    <input type="text" name="word" placeholder="Type 'hacker' to get the flag" />
+    <div class="button" onclick="document.getElementById('form').submit();"><p>SEND</p></div>
+  </div>
+</form>
+</body>
+</html>
